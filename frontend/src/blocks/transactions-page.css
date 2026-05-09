@@ -1,0 +1,130 @@
+/* ── Transactions Page ───────────────────────────── */
+.txpage__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.txpage__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-1);
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+.txpage__sub {
+  font-size: 0.875rem;
+  color: var(--color-text-4);
+  margin-top: 0.25rem;
+}
+
+/* Month navigation */
+.month-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 0.5rem 0.875rem;
+  box-shadow: var(--shadow-card);
+}
+
+.month-nav__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-surface-2);
+  color: var(--color-text-3);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.month-nav__btn:hover:not(:disabled) {
+  background: #ede9fe;
+  color: var(--color-primary);
+}
+
+.month-nav__btn--disabled,
+.month-nav__btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.month-nav__label {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text-1);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 160px;
+  justify-content: center;
+}
+
+.month-nav__current {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  background: #ede9fe;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+/* Monthly summary bar */
+.txpage__summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.txpage__stat {
+  background: var(--color-surface);
+  border-radius: 14px;
+  padding: 1.125rem 1.25rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  border-left: 4px solid transparent;
+}
+
+.txpage__stat--balance { border-color: var(--color-primary); }
+.txpage__stat--income  { border-color: #14b8a6; }
+.txpage__stat--expense { border-color: var(--color-error); }
+.txpage__stat--count   { border-color: var(--color-text-5); }
+
+.txpage__stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-5);
+}
+
+.txpage__stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--color-text-1);
+}
+
+.txpage__stat--balance .txpage__stat-value { color: var(--color-primary); }
+.txpage__stat--income  .txpage__stat-value { color: #0d9488; }
+.txpage__stat--expense .txpage__stat-value { color: #ea580c; }
+
+/* Transactions page list — remove max-height so all are visible */
+.txpage__list .tx-list {
+  max-height: none;
+}

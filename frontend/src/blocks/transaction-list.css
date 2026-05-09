@@ -1,0 +1,284 @@
+/* ── Transaction List ────────────────────────────── */
+.tx-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  /* El max-height fue removido/comentado o sobrescrito en pantallas grandes si se necesita */
+  padding-right: 0.25rem;
+}
+
+.tx-list::-webkit-scrollbar { width: 4px; }
+.tx-list::-webkit-scrollbar-track { background: transparent; }
+.tx-list::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+
+/* ── Transaction Item ────────────────────────────── */
+.tx-item {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1rem;
+  border-radius: 12px;
+  background: var(--color-surface-2);
+  border: 1px solid #f1f5f9;
+  transition: background 0.12s;
+  height: max-content;
+  min-height: max-content;
+}
+
+.tx-item:hover {
+  background: var(--color-surface-2);
+}
+
+.tx-item__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.tx-item__icon--income  { background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%); color: #0d9488; }
+.tx-item__icon--expense { background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%); color: #ea580c; }
+
+.tx-item__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.tx-item__category {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tx-item__date {
+  font-size: 0.75rem;
+  color: var(--color-text-5);
+  margin-top: 2px;
+}
+
+.tx-item__note {
+  font-size: 0.75rem;
+  color: var(--color-text-4);
+  font-style: italic;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.tx-item__payment {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  color: #8b5cf6;
+  margin-top: 2px;
+}
+
+.tx-item__right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.tx-item__amount {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.tx-item__amount--income  { color: #0d9488; }
+.tx-item__amount--expense { color: #ea580c; }
+
+.tx-item__badge {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-top: 3px;
+}
+
+.tx-item__badge--income  { background: #ccfbf1; color: #0d9488; }
+.tx-item__badge--expense { background: #fff7ed; color: #ea580c; }
+
+/* ── Budget-tag chip on transaction list ─────────── */
+.tx-item__btag {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 20px;
+  margin-top: 3px;
+  white-space: nowrap;
+}
+
+.tx-item__btag--indispensable { background: #ede9fe; color: var(--color-primary-hover); }
+.tx-item__btag--ahorro        { background: #f5f3ff; color: #6d28d9; }
+.tx-item__btag--extra         { background: #ede9fe; color: #7c3aed; }
+
+/* Delete button */
+.tx-item__delete {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text-6);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  margin-left: 0.25rem;
+  opacity: 0;
+}
+
+.tx-item:hover .tx-item__delete {
+  opacity: 1;
+}
+
+.tx-item__delete:hover {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+/* ── Empty state ─────────────────────────────────── */
+.tx-empty {
+  text-align: center;
+  padding: 3.5rem 1rem;
+  color: var(--color-text-5);
+}
+
+.tx-empty__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.875rem;
+}
+
+.tx-empty__text {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text-4);
+}
+
+.tx-empty__sub {
+  font-size: 0.8125rem;
+  margin-top: 0.375rem;
+}
+
+/* ── Column layout (Transactions page) ───────────── */
+.tx-income-section {
+  margin-bottom: 1.25rem;
+}
+
+.tx-income-list {
+  max-height: 260px;
+}
+
+.tx-grid-2x2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 420px;
+  gap: 1.25rem;
+  align-items: stretch;
+  margin-bottom: 1.25rem;
+}
+
+.tx-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+  margin-bottom: 1.25rem;
+}
+
+.tx-col {
+  background: var(--color-surface);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tx-col__header {
+  padding: 1rem 1.125rem 0.875rem;
+  border-top: 4px solid var(--col-color, var(--color-primary));
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.tx-col__title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tx-col__icon  { font-size: 1.125rem; line-height: 1; flex-shrink: 0; }
+.tx-col__title { font-size: 0.9rem; font-weight: 600; color: var(--color-text-1); flex: 1; }
+
+.tx-col__pct {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.tx-col__total {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.tx-col__body {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-text-6) transparent;
+}
+
+.tx-col__body::-webkit-scrollbar        { width: 4px; }
+.tx-col__body::-webkit-scrollbar-track  { background: transparent; }
+.tx-col__body::-webkit-scrollbar-thumb  { background: #cbd5e1; border-radius: 2px; }
+
+.tx-col__body .tx-item {
+  padding: 0.625rem 0.75rem;
+  border-radius: 10px;
+}
+
+.tx-col__body .tx-item__icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.tx-col__body .tx-item__category { font-size: 0.875rem; }
+.tx-col__body .tx-item__amount   { font-size: 0.875rem; }
+
+.tx-col__empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--color-text-6);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}

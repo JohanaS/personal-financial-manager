@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ── Blocks ───────────────────────────────────────── */
+@import './blocks/login.css';
+@import './blocks/header.css';
+@import './blocks/dashboard.css';
+@import './blocks/form.css';
+@import './blocks/custom-select.css';
+@import './blocks/transaction-list.css';
+@import './blocks/budget-rule.css';
+@import './blocks/expense-chart.css';
+@import './blocks/confirm-dialog.css';
+@import './blocks/modal.css';
+@import './blocks/transactions-page.css';
+@import './blocks/reports.css';
+@import './blocks/responsive.css';
+@import './blocks/dark-mode.css';
+
+/* ── Theme tokens ─────────────────────────────────── */
+:root {
+  --color-page:          #f1f5f9;
+  --color-surface:       #ffffff;
+  --color-surface-2:     #f8fafc;
+  --color-border:        #e2e8f0;
+  --color-text-1:        #1e293b;
+  --color-text-2:        #334155;
+  --color-text-3:        #475569;
+  --color-text-4:        #64748b;
+  --color-text-5:        #94a3b8;
+  --color-text-6:        #cbd5e1;
+  --shadow-card:         0 1px 3px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.04);
+  /* Brand / semantic */
+  --color-primary:       #6366f1;
+  --color-primary-hover: #4f46e5;
+  --color-accent:        #f97316;
+  --color-success:       #14b8a6;
+  --color-error:         #f97316;
+}
+
+[data-theme="dark"] {
+  --color-page:          #0f172a;
+  --color-surface:       #1e293b;
+  --color-surface-2:     #283548;
+  --color-border:        #334155;
+  --color-text-1:        #f1f5f9;
+  --color-text-2:        #e2e8f0;
+  --color-text-3:        #cbd5e1;
+  --color-text-4:        #94a3b8;
+  --color-text-5:        #64748b;
+  --color-text-6:        #475569;
+  --shadow-card:         0 1px 3px rgba(0,0,0,.2), 0 4px 16px rgba(0,0,0,.15);
+  /* Brand / semantic – slightly lighter for dark backgrounds */
+  --color-primary:       #818cf8;
+  --color-primary-hover: #6366f1;
+  --color-accent:        #fb923c;
+  --color-success:       #2dd4bf;
+  --color-error:         #fb923c;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--color-page);
+  color: var(--color-text-1);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  transition: background-color 0.25s, color 0.25s;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+input, select, button, textarea {
+  font-family: inherit;
+}
+

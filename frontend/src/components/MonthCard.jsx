@@ -40,7 +40,7 @@ export default function MonthCard({ monthName, monthIndex, year, transactions })
         <div className="month-card__row">
           <span className="month-card__row-label">
               <span className="month-card__row-icon month-card__row-icon--income">
-                <AppIcon name="income" size={11} color="#16a34a" />
+                <AppIcon name="income" size={11} color="#0d9488" />
               </span>
             Ingresos
           </span>
@@ -51,7 +51,7 @@ export default function MonthCard({ monthName, monthIndex, year, transactions })
         <div className="month-card__row">
           <span className="month-card__row-label">
               <span className="month-card__row-icon month-card__row-icon--expense">
-                <AppIcon name="expense" size={11} color="#dc2626" />
+                <AppIcon name="expense" size={11} color="#ea580c" />
               </span>
             Egresos
           </span>

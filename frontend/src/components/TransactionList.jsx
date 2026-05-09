@@ -4,7 +4,7 @@ import { AppIcon } from '../utils/icons';
 
 const COLUMNS = [
   { key: 'indispensable', label: 'Indispensable', icon: 'indispensable',
-    color: '#6366f1', bg: '#ede9fe', text: '#4f46e5' },
+    color: 'var(--color-primary)', bg: '#ede9fe', text: 'var(--color-primary-hover)' },
   { key: 'ahorro',        label: 'Ahorro',        icon: 'ahorro',
     color: '#7c3aed', bg: '#f5f3ff', text: '#6d28d9' },
   { key: 'extra',         label: 'Extra / Gusto', icon: 'extra',
@@ -27,15 +27,19 @@ function formatDate(dateStr) {
 
 // ── Single transaction card (no tag chip) ─────────────────
 function TxItem({ tx, onAskDelete }) {
+  const iconColor = tx.type === 'income' ? '#0d9488' : '#ea580c';
   return (
     <div className="tx-item">
       <div className={`tx-item__icon tx-item__icon--${tx.type}`}>
-        <AppIcon name={tx.category} size={16} color="#6366f1" />
+        <AppIcon name={tx.category} size={16} color={iconColor} />
       </div>
 
       <div className="tx-item__info">
         <div className="tx-item__category">{tx.category}</div>
         <div className="tx-item__date">{formatDate(tx.date)}</div>
+        {tx.note && (
+          <div className="tx-item__note">{tx.note}</div>
+        )}
         {tx.paymentMethod && (
           <div className="tx-item__payment">
             <AppIcon name={tx.paymentMethod} size={12} color="#8b5cf6" />
@@ -135,7 +139,7 @@ export default function TransactionList({ transactions, onDelete, rule }) {
       {allEmpty ? (
         <div className="card">
           <div className="tx-empty">
-            <div className="tx-empty__icon"><AppIcon name="list" size={32} color="#6366f1" /></div>
+            <div className="tx-empty__icon"><AppIcon name="list" size={32} color="var(--color-primary)" /></div>
             <div className="tx-empty__text">Sin transacciones aún</div>
             <div className="tx-empty__sub">Agrega tu primera transacción para comenzar</div>
           </div>
@@ -145,18 +149,18 @@ export default function TransactionList({ transactions, onDelete, rule }) {
           {/* Cuadrícula 2×2: ingresos + 3 categorías */}
           <div className="tx-grid-2x2">
             {/* Tile de ingresos */}
-            <div className="tx-col" style={{ '--col-color': '#6366f1' }}>
+            <div className="tx-col" style={{ '--col-color': 'var(--color-primary)' }}>
               <div className="tx-col__header">
                 <div className="tx-col__title-row">
                   <span className="tx-col__icon">
-                    <AppIcon name="inbox" size={15} color="#4f46e5" />
+                    <AppIcon name="inbox" size={15} color="var(--color-primary-hover)" />
                   </span>
                   <span className="tx-col__title">Ingresos</span>
-                  <span className="tx-col__pct" style={{ background: '#ede9fe', color: '#4f46e5' }}>
+                  <span className="tx-col__pct" style={{ background: '#ede9fe', color: 'var(--color-primary-hover)' }}>
                     {income.length} {income.length === 1 ? 'registro' : 'registros'}
                   </span>
                 </div>
-                <span className="tx-col__total" style={{ color: '#4f46e5' }}>
+                <span className="tx-col__total" style={{ color: 'var(--color-primary-hover)' }}>
                   {income.length > 0
                     ? formatCurrency(income.reduce((s, t) => s + t.amount, 0))
                     : '—'}

@@ -1,15 +1,17 @@
 import { AppIcon } from '../utils/icons';
 
 const CATEGORY_COLORS = {
-  Salario:         { bar: '#6366f1', bg: '#ede9fe', text: '#4f46e5' },
-  Freelance:       { bar: '#7c3aed', bg: '#f5f3ff', text: '#6d28d9' },
-  'Inversión':     { bar: '#8b5cf6', bg: '#f5f3ff', text: '#7c3aed' },
-  Bono:            { bar: '#4f46e5', bg: '#e0e7ff', text: '#3730a3' },
-  Regalo:          { bar: '#a78bfa', bg: '#f5f3ff', text: '#7c3aed' },
-  Otro:            { bar: '#c4b5fd', bg: '#faf5ff', text: '#8b5cf6' },
+  Comida:          { bar: 'var(--color-accent)', bg: '#fff7ed', text: '#ea580c' },
+  Transporte:      { bar: 'var(--color-primary)', bg: '#eff6ff', text: '#2563eb' },
+  Compras:         { bar: '#ec4899', bg: '#fdf2f8', text: '#db2777' },
+  Entretenimiento: { bar: '#a855f7', bg: '#faf5ff', text: '#9333ea' },
+  Salud:           { bar: 'var(--color-success)', bg: '#ecfdf5', text: '#059669' },
+  Servicios:       { bar: '#06b6d4', bg: '#ecfeff', text: '#0891b2' },
+  Renta:           { bar: 'var(--color-error)', bg: '#fff7ed', text: '#ea580c' },
+  Otro:            { bar: '#6b7280', bg: '#f9fafb', text: '#4b5563' },
 };
 
-const DEFAULT_COLOR = { bar: '#6366f1', bg: '#ede9fe', text: '#4f46e5' };
+const DEFAULT_COLOR = { bar: 'var(--color-error)', bg: '#fff7ed', text: '#ea580c' };
 
 function formatCurrency(n) {
   return new Intl.NumberFormat('es-MX', {
@@ -18,28 +20,28 @@ function formatCurrency(n) {
 }
 
 export default function IncomeChart({ transactions }) {
-  // Agrupar ingresos por categoría
-  const incomeByCategory = {};
+  // Agrupar gastos por categoría
+  const expenseByCategory = {};
   for (const tx of transactions) {
-    if (tx.type !== 'income') continue;
-    incomeByCategory[tx.category] = (incomeByCategory[tx.category] ?? 0) + tx.amount;
+    if (tx.type !== 'expense') continue;
+    expenseByCategory[tx.category] = (expenseByCategory[tx.category] ?? 0) + tx.amount;
   }
 
-  const total = Object.values(incomeByCategory).reduce((s, v) => s + v, 0);
+  const total = Object.values(expenseByCategory).reduce((s, v) => s + v, 0);
 
   // Ordenar de mayor a menor
-  const entries = Object.entries(incomeByCategory).sort((a, b) => b[1] - a[1]);
+  const entries = Object.entries(expenseByCategory).sort((a, b) => b[1] - a[1]);
 
   if (entries.length === 0) {
     return (
       <div className="card">
         <div className="card__header">
-          <span className="card__title">Ingresos por categoría</span>
+          <span className="card__title">Gastos por categoría</span>
         </div>
         <div className="tx-empty">
-          <div className="tx-empty__icon"><AppIcon name="chart" size={32} color="#6366f1" /></div>
-          <div className="tx-empty__text">Sin ingresos registrados</div>
-          <div className="tx-empty__sub">Agrega transacciones de tipo ingreso para ver la gráfica</div>
+          <div className="tx-empty__icon"><AppIcon name="chart" size={32} color="var(--color-error)" /></div>
+          <div className="tx-empty__text">Sin gastos registrados</div>
+          <div className="tx-empty__sub">Agrega transacciones de tipo gasto para ver la gráfica</div>
         </div>
       </div>
     );
@@ -48,7 +50,7 @@ export default function IncomeChart({ transactions }) {
   return (
     <div className="card">
       <div className="card__header">
-        <span className="card__title">Ingresos por categoría</span>
+        <span className="card__title">Gastos por categoría</span>
         <span className="card__badge">Total {formatCurrency(total)}</span>
       </div>
 
@@ -86,19 +88,6 @@ export default function IncomeChart({ transactions }) {
                 </span>
                 <span className="chart__amount">{formatCurrency(amount)}</span>
               </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Leyenda de categorías */}
-      <div className="chart__legend">
-        {entries.map(([category]) => {
-          const color = CATEGORY_COLORS[category] ?? DEFAULT_COLOR;
-          return (
-            <div key={category} className="chart__legend-item">
-              <span className="chart__legend-dot" style={{ background: color.bar }} />
-              <span className="chart__legend-name">{category}</span>
             </div>
           );
         })}

@@ -8,9 +8,9 @@ const TAGS = [
     icon: 'indispensable',
     desc: 'Renta, comida, transporte, servicios básicos',
     defaultPct: 50,
-    color: '#6366f1',
+    color: 'var(--color-primary)',
     bg: '#ede9fe',
-    text: '#4f46e5',
+    text: 'var(--color-primary-hover)',
   },
   {
     key: 'ahorro',
@@ -47,7 +47,6 @@ function clamp(val, min, max) {
 export default function BudgetRule({ transactions, rule, onRuleChange }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft]     = useState({ ...rule });
-  const [error, setError]     = useState('');
 
   const now = new Date();
 
@@ -79,24 +78,22 @@ export default function BudgetRule({ transactions, rule, onRuleChange }) {
   spentByTag.ahorro = thisMonthSavings.reduce((s, t) => s + t.amount, 0);
 
   function handleDraftChange(key, raw) {
-    const val = parseInt(raw, 10) || 0;
-    setDraft(prev => ({ ...prev, [key]: val }));
+    const val = Math.max(0, parseInt(raw, 10) || 0);
+    setDraft(prev => {
+      const otherSum = TAGS.reduce((s, t) => t.key === key ? s : s + (prev[t.key] ?? 0), 0);
+      // Block the change if it would push the total above 100
+      if (otherSum + val > 100) return prev;
+      return { ...prev, [key]: val };
+    });
   }
 
   function saveRule() {
-    const total = TAGS.reduce((s, t) => s + (draft[t.key] ?? 0), 0);
-    if (total !== 100) {
-      setError(`Los porcentajes suman ${total}%. Deben sumar exactamente 100%.`);
-      return;
-    }
-    setError('');
     onRuleChange({ ...draft });
     setEditing(false);
   }
 
   function cancelEdit() {
     setDraft({ ...rule });
-    setError('');
     setEditing(false);
   }
 
@@ -126,150 +123,143 @@ export default function BudgetRule({ transactions, rule, onRuleChange }) {
         </span>
       </div>
 
-      {/* Edición de porcentajes */}
-      {editing && (
-        <div className="budget__edit-panel card-reveal">
-          <p className="budget__edit-hint">Ajusta los porcentajes (deben sumar 100%)</p>
-          <div className="budget__edit-fields">
-            {TAGS.map(tag => (
-              <div key={tag.key} className="budget__edit-field">
-                <label className="budget__edit-label" style={{ color: tag.text }}>
-                  <AppIcon name={tag.icon} size={14} color={tag.text} /> {tag.label}
-                </label>
-                <div className="budget__edit-input-wrap">
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    className="budget__edit-input"
-                    value={draft[tag.key] ?? tag.defaultPct}
-                    onChange={e => handleDraftChange(tag.key, e.target.value)}
-                    style={{ borderColor: tag.color }}
-                  />
-                  <span className="budget__edit-pct">%</span>
-                </div>
-              </div>
-            ))}
-          </div>
-          {error && <p className="budget__edit-error">{error}</p>}
-          <div className="budget__edit-actions">
-            <button type="button" className="dialog__btn dialog__btn--cancel" onClick={cancelEdit}>
-              Cancelar
-            </button>
-            <button type="button" className="btn-primary budget__edit-save" onClick={saveRule}>
-              Guardar
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Cuerpo: gráfica vertical (izquierda) + detalles/edición (derecha) */}
+      <div className="budget__body">
 
-      {/* Gráfica comparativa por tag */}
-      <div className="budget__rows">
-        {TAGS.map(tag => {
-          const isAhorro   = tag.key === 'ahorro';
-          const budget     = monthIncome * (rule[tag.key] / 100);
-          const spent      = spentByTag[tag.key] ?? 0;
-          const diff       = spent - budget;           // positivo = exceso / bono ahorro
-          const spentPct   = budget > 0 ? clamp((spent / budget) * 100, 0, 100) : 0;
-          const remainPct  = 100 - spentPct;
-          const overBudget = !isAhorro && spent > budget && budget > 0;  // gasto excedido (malo)
-          const overGoal   =  isAhorro && spent > budget && budget > 0;  // ahorro extra   (bueno)
+        {/* IZQUIERDA – barras verticales */}
+        <div className="budget__chart">
+          <div className="budget__bars">
+            {TAGS.map(tag => {
+              const budget     = monthIncome * (rule[tag.key] / 100);
+              const spent      = spentByTag[tag.key] ?? 0;
+              const spentPct   = budget > 0 ? clamp((spent / budget) * 100, 0, 100) : 0;
+              const isAhorro   = tag.key === 'ahorro';
+              const overBudget = !isAhorro && spent > budget && budget > 0;
+              const fillColor  = overBudget ? 'var(--color-error)' : tag.color;
 
-          return (
-            <div key={tag.key} className="budget__row">
-              {/* Encabezado fila */}
-              <div className="budget__row-head">
-                <div className="budget__row-title">
-                  <span className="budget__row-icon">
-                    <AppIcon name={tag.icon} size={18} color={tag.text} />
-                  </span>
-                  <div>
-                    <span className="budget__row-label">{tag.label}</span>
-                    <span className="budget__row-desc">{tag.desc}</span>
-                  </div>
-                </div>
-                <div className="budget__row-nums">
-                  <span className="budget__row-pct" style={{ background: tag.bg, color: tag.text }}>
+              return (
+                <div key={tag.key} className="budget__bar-group">
+                  <div className="budget__bar-pct-label" style={{ color: tag.text }}>
                     {rule[tag.key]}%
-                  </span>
-                </div>
-              </div>
-
-              {/* Barra de progreso apilada */}
-              {monthIncome > 0 ? (
-                <div className="budget__progress-wrap">
-                  <div className="budget__progress-track">
-                    {/* Segmento principal (gastado / ahorrado) */}
-                    <div
-                      className={`budget__progress-spent${overBudget ? ' budget__progress-spent--over' : ''}`}
-                      style={{
-                        '--spent-w': `${spentPct}%`,
-                        background: overBudget ? '#ef4444' : tag.color,
-                      }}
-                    />
-                    {/* Segmento restante (solo cuando no se excede) */}
-                    {!overBudget && !overGoal && (
+                  </div>
+                  <div className="budget__bar-track" style={{ background: tag.bg }}>
+                    {monthIncome > 0 && (
                       <div
-                        className="budget__progress-remain"
-                        style={{ '--remain-w': `${remainPct}%`, background: '#9582e9' }}
+                        className="budget__bar-fill"
+                        style={{ '--bar-h': `${spentPct}%`, background: fillColor }}
                       />
                     )}
                   </div>
-
-                  {/* Leyenda debajo */}
-                  <div className="budget__progress-legend">
-                    {/* Izquierda: ahorrado / gastado */}
-                    <div className="budget__legend-item">
-                      <span
-                        className="budget__legend-dot"
-                        style={{ background: overBudget ? '#ef4444' : tag.color }}
-                      />
-                      <span className="budget__legend-lbl">
-                        {isAhorro ? 'Ahorrado' : 'Gastado'}
-                      </span>
-                      <strong className={`budget__legend-val${overBudget ? ' budget__legend-val--over' : ''}`}>
-                        {formatCurrency(spent)}
-                      </strong>
-                      <span className="budget__legend-pct">
-                        {Math.round(spentPct)}%
-                      </span>
-                    </div>
-
-                    {/* Derecha: situación */}
-                    {overBudget && (
-                      <div className="budget__legend-over">
-                        ⚠️ Excediste {formatCurrency(diff)}
-                      </div>
-                    )}
-
-                    {overGoal && (
-                      <div className="budget__legend-extra">
-                        🎉 Adicional {formatCurrency(diff)}
-                      </div>
-                    )}
-
-                    {!overBudget && !overGoal && (
-                      <div className="budget__legend-item budget__legend-item--right">
-                        <span className="budget__legend-dot" style={{ background: '#e2e8f0' }} />
-                        <span className="budget__legend-lbl">
-                          {isAhorro ? 'Por ahorrar' : 'Restante'}
-                        </span>
-                        <strong className="budget__legend-val">
-                          {formatCurrency(Math.max(budget - spent, 0))}
-                        </strong>
-                        <span className="budget__legend-pct budget__legend-pct--muted">
-                          de {formatCurrency(budget)}
-                        </span>
-                      </div>
-                    )}
+                  <div className="budget__bar-label">
+                    <AppIcon name={tag.icon} size={13} color={tag.text} />
+                    <span style={{ color: tag.text }}>{tag.label}</span>
                   </div>
                 </div>
-              ) : (
-                <p className="budget__no-income">Sin ingresos este mes para calcular el presupuesto.</p>
-              )}
-            </div>
-          );
-        })}
+              );
+            })}
+          </div>
+          {monthIncome > 0
+            ? <p className="budget__chart-hint">Progreso del mes actual</p>
+            : <p className="budget__chart-hint">Sin ingresos este mes</p>
+          }
+        </div>
+
+        {/* DERECHA – detalles por categoría (y edición) */}
+        <div className="budget__details">
+          {TAGS.map(tag => {
+            const isAhorro   = tag.key === 'ahorro';
+            const budget     = monthIncome * (rule[tag.key] / 100);
+            const spent      = spentByTag[tag.key] ?? 0;
+            const diff       = spent - budget;
+            const overBudget = !isAhorro && spent > budget && budget > 0;
+            const overGoal   =  isAhorro && spent > budget && budget > 0;
+
+            return (
+              <div key={tag.key} className="budget__detail-row" style={{ borderLeftColor: tag.color }}>
+                <div className="budget__detail-head">
+                  <span className="budget__detail-icon">
+                    <AppIcon name={tag.icon} size={15} color={tag.text} />
+                  </span>
+                  <span className="budget__detail-label">{tag.label}</span>
+                  {editing ? (
+                    <div className="budget__edit-input-wrap">
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        className="budget__edit-input"
+                        value={draft[tag.key] ?? tag.defaultPct}
+                        onChange={e => handleDraftChange(tag.key, e.target.value)}
+                        style={{ borderColor: tag.color }}
+                      />
+                      <span className="budget__edit-pct">%</span>
+                    </div>
+                  ) : (
+                    <span className="budget__row-pct" style={{ background: tag.bg, color: tag.text }}>
+                      {rule[tag.key]}%
+                    </span>
+                  )}
+                </div>
+
+                {monthIncome > 0 && !editing && (
+                  <div className="budget__detail-amounts">
+                    <span className={`budget__detail-spent${overBudget ? ' budget__detail-spent--over' : ''}`}>
+                      {isAhorro ? 'Ahorrado' : 'Gastado'}: <strong>{formatCurrency(spent)}</strong>
+                    </span>
+                    {overBudget && (
+                      <span className="budget__detail-status budget__detail-status--over">
+                        ⚠️ +{formatCurrency(diff)}
+                      </span>
+                    )}
+                    {overGoal && (
+                      <span className="budget__detail-status budget__detail-status--good">
+                        🎉 +{formatCurrency(diff)}
+                      </span>
+                    )}
+                    {!overBudget && !overGoal && (
+                      <span className="budget__detail-remain">
+                        de {formatCurrency(budget)}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Acciones de edición */}
+          {editing && (() => {
+            const usedPct = TAGS.reduce((s, t) => s + (draft[t.key] ?? 0), 0);
+            const remaining = 100 - usedPct;
+            return (
+              <>
+                <div className="budget__edit-remaining">
+                  <span>Total distribuido:</span>
+                  <strong style={{ color: usedPct === 100 ? '#0d9488' : '#f59e0b' }}>
+                    {usedPct}%
+                  </strong>
+                  {remaining > 0 && (
+                    <span className="budget__edit-remaining-hint">· faltan {remaining}%</span>
+                  )}
+                </div>
+                <div className="budget__edit-actions">
+                  <button type="button" className="dialog__btn dialog__btn--cancel" onClick={cancelEdit}>
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-primary budget__edit-save"
+                    onClick={saveRule}
+                    disabled={usedPct !== 100}
+                    style={{ opacity: usedPct !== 100 ? 0.45 : 1, cursor: usedPct !== 100 ? 'not-allowed' : 'pointer' }}
+                  >
+                    Guardar
+                  </button>
+                </div>
+              </>
+            );
+          })()}
+        </div>
       </div>
     </div>
   );

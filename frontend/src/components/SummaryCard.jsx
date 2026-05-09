@@ -15,11 +15,17 @@ const TRENDS = {
   expense: 'Todos los gastos registrados',
 };
 
+const ICON_COLORS = {
+  balance: 'var(--color-primary)',
+  income:  '#0d9488',
+  expense: '#ea580c',
+};
+
 export default function SummaryCard({ title, amount, variant }) {
   return (
     <div className="summary-card">
       <div className={`summary-card__icon summary-card__icon--${variant}`}>
-        <AppIcon name={variant} size={22} color="#6366f1" />
+        <AppIcon name={variant} size={22} color={ICON_COLORS[variant] ?? 'var(--color-primary)'} />
       </div>
       <div className="summary-card__body">
         <div className="summary-card__label">{title}</div>

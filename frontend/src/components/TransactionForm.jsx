@@ -5,22 +5,22 @@ import { AppIcon } from '../utils/icons';
 
 const CATEGORIES = {
   income: [
-    { value: 'Salario',         icon: <AppIcon name="Salario"         size={16} color="#6366f1" /> },
-    { value: 'Freelance',       icon: <AppIcon name="Freelance"       size={16} color="#6366f1" /> },
-    { value: 'Inversión',       icon: <AppIcon name="Inversión"       size={16} color="#6366f1" /> },
-    { value: 'Bono',            icon: <AppIcon name="Bono"            size={16} color="#6366f1" /> },
-    { value: 'Regalo',          icon: <AppIcon name="Regalo"          size={16} color="#6366f1" /> },
-    { value: 'Otro',            icon: <AppIcon name="Otro"            size={16} color="#6366f1" /> },
+    { value: 'Salario',         icon: <AppIcon name="Salario"         size={16} color="var(--color-primary)" /> },
+    { value: 'Freelance',       icon: <AppIcon name="Freelance"       size={16} color="var(--color-primary)" /> },
+    { value: 'Inversión',       icon: <AppIcon name="Inversión"       size={16} color="var(--color-primary)" /> },
+    { value: 'Bono',            icon: <AppIcon name="Bono"            size={16} color="var(--color-primary)" /> },
+    { value: 'Regalo',          icon: <AppIcon name="Regalo"          size={16} color="var(--color-primary)" /> },
+    { value: 'Otro',            icon: <AppIcon name="Otro"            size={16} color="var(--color-primary)" /> },
   ],
   expense: [
-    { value: 'Comida',          icon: <AppIcon name="Comida"          size={16} color="#6366f1" /> },
-    { value: 'Transporte',      icon: <AppIcon name="Transporte"      size={16} color="#6366f1" /> },
-    { value: 'Compras',         icon: <AppIcon name="Compras"         size={16} color="#6366f1" /> },
-    { value: 'Entretenimiento', icon: <AppIcon name="Entretenimiento" size={16} color="#6366f1" /> },
-    { value: 'Salud',           icon: <AppIcon name="Salud"           size={16} color="#6366f1" /> },
-    { value: 'Servicios',       icon: <AppIcon name="Servicios"       size={16} color="#6366f1" /> },
-    { value: 'Renta',           icon: <AppIcon name="Renta"           size={16} color="#6366f1" /> },
-    { value: 'Otro',            icon: <AppIcon name="Otro"            size={16} color="#6366f1" /> },
+    { value: 'Comida',          icon: <AppIcon name="Comida"          size={16} color="var(--color-primary)" /> },
+    { value: 'Transporte',      icon: <AppIcon name="Transporte"      size={16} color="var(--color-primary)" /> },
+    { value: 'Compras',         icon: <AppIcon name="Compras"         size={16} color="var(--color-primary)" /> },
+    { value: 'Entretenimiento', icon: <AppIcon name="Entretenimiento" size={16} color="var(--color-primary)" /> },
+    { value: 'Salud',           icon: <AppIcon name="Salud"           size={16} color="var(--color-primary)" /> },
+    { value: 'Servicios',       icon: <AppIcon name="Servicios"       size={16} color="var(--color-primary)" /> },
+    { value: 'Renta',           icon: <AppIcon name="Renta"           size={16} color="var(--color-primary)" /> },
+    { value: 'Otro',            icon: <AppIcon name="Otro"            size={16} color="var(--color-primary)" /> },
   ],
 };
 
@@ -47,6 +47,7 @@ const emptyForm = {
   selectedCard: '',
   newCardName: '',
   budgetTag: 'indispensable',
+  note: '',
 };
 
 export default function TransactionForm({ onAdd, savedCards, onSaveCard, onDeleteCard }) {
@@ -103,6 +104,7 @@ export default function TransactionForm({ onAdd, savedCards, onSaveCard, onDelet
       budgetTag: (form.type === 'expense' || (form.type === 'income' && form.budgetTag === 'ahorro'))
         ? form.budgetTag
         : null,
+      note: form.note.trim() || null,
     });
 
     setForm(prev => ({ ...emptyForm, type: prev.type, paymentMethod: prev.paymentMethod }));
@@ -302,6 +304,21 @@ export default function TransactionForm({ onAdd, savedCards, onSaveCard, onDelet
             value={form.date}
             onChange={handleChange}
             required
+          />
+        </div>
+
+        {/* Nota */}
+        <div className="form-group">
+          <label className="form-label" htmlFor="note">Nota <span className="form-label--optional">(opcional)</span></label>
+          <input
+            id="note"
+            name="note"
+            type="text"
+            placeholder="Ej: almuerzo con el equipo, pago mensual..."
+            className="form-input"
+            value={form.note}
+            onChange={handleChange}
+            maxLength={120}
           />
         </div>
 

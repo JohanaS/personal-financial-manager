@@ -85,7 +85,7 @@ export default function CustomSelect({ id, value, onChange, options, placeholder
                 {isActive && (
                   <span className="cselect__check">
                     <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-                      <path d="M1 5L5 9L13 1" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M1 5L5 9L13 1" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </span>
                 )}

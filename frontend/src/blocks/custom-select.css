@@ -1,0 +1,142 @@
+/* ── Custom Select ───────────────────────────────── */
+.cselect {
+  position: relative;
+  width: 100%;
+  user-select: none;
+}
+
+.cselect__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  color: var(--color-text-1);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  text-align: left;
+  outline: none;
+}
+
+.cselect__trigger:hover {
+  border-color: #c7d2fe;
+}
+
+.cselect--open .cselect__trigger {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-card);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.cselect__trigger--placeholder .cselect__value {
+  color: var(--color-text-5);
+}
+
+.cselect__value {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cselect__item-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.cselect__chevron {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.cselect__chevron--up {
+  transform: rotate(180deg);
+}
+
+/* Dropdown menu */
+.cselect__menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-primary);
+  border-top: none;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  box-shadow: var(--shadow-card);
+  list-style: none;
+  padding: 0.375rem 0;
+  margin: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  animation: dropdownOpen 0.15s ease;
+}
+
+@keyframes dropdownOpen {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cselect__menu::-webkit-scrollbar { width: 4px; }
+.cselect__menu::-webkit-scrollbar-track { background: transparent; }
+.cselect__menu::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+
+/* Option row */
+.cselect__option {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.9rem;
+  color: var(--color-text-2);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.cselect__option:hover {
+  background: var(--color-surface-2);
+}
+
+.cselect__option--active {
+  background: #ede9fe;
+  color: var(--color-primary-hover);
+  font-weight: 500;
+}
+
+.cselect__option--active:hover {
+  background: #e0e7ff;
+}
+
+.cselect__option--accent {
+  color: var(--color-primary);
+  font-weight: 500;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 0.25rem;
+  padding-top: 0.625rem;
+}
+
+.cselect__option--accent:hover {
+  background: #ede9fe;
+}
+
+.cselect__check {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}

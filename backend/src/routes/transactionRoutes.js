@@ -4,6 +4,6 @@ import { createTransaction, getTransactions } from "../controllers/transactionCo
 const router = express.Router();
 
 router.post("/transactions", createTransaction);
-router.get("/transactions/users/:id", getTransactions);
+router.get("/transactions/user/:id", getTransactions);
 
 export default router;

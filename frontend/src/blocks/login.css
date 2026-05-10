@@ -138,6 +138,16 @@
   margin-bottom: 0.75rem;
 }
 
+.login-card__success {
+  font-size: 0.8125rem;
+  color: var(--color-income, #22c55e);
+  background: color-mix(in srgb, var(--color-income, #22c55e) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-income, #22c55e) 25%, transparent);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
 /* ── Submit button ───────────────────────────────── */
 .login-card__submit {
   width: 100%;

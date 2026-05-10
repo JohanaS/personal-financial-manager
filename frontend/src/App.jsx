@@ -1,11 +1,13 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
 import Reports from './pages/Reports';
 import Login from './pages/Login';
 import { ThemeProvider } from './context/ThemeContext';
+import { getStoredUser, logoutUser } from './utils/auth';
+import { getTransactions } from './utils/api';
 
 const DEFAULT_RULE = { indispensable: 50, ahorro: 30, extra: 20 };
 
@@ -14,16 +16,24 @@ const INITIAL_TRANSACTIONS = [];
 const INITIAL_CARDS = [];
 
 export default function App() {
-  const [user, setUser]                 = useState(null); // { email, name }
+  const [user, setUser]                 = useState(() => getStoredUser());
   const [transactions, setTransactions] = useState(INITIAL_TRANSACTIONS);
   const [savedCards, setSavedCards]     = useState(INITIAL_CARDS);
   const [budgetRule, setBudgetRule]     = useState(DEFAULT_RULE);
+
+  useEffect(() => {
+    if (!user) return;
+    getTransactions(user.id)
+      .then(data => setTransactions(data))
+      .catch(err => console.error('Error fetching transactions:', err));
+  }, [user?.id]);
 
   function handleLogin(userData) {
     setUser(userData);
   }
 
   function handleLogout() {
+    logoutUser();
     setUser(null);
   }
 
@@ -32,7 +42,7 @@ export default function App() {
   }
 
   function handleDeleteTransaction(id) {
-    setTransactions(prev => prev.filter(t => t.id !== id));
+    setTransactions(prev => prev.filter(t => (t._id || t.id) !== id));
   }
 
   function handleSaveCard(name) {

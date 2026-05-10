@@ -11,6 +11,7 @@ export default function Login({ onLogin }) {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   function handleChange(e) {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -49,6 +50,7 @@ export default function Login({ onLogin }) {
         onLogin(user);
       } else {
         await registerUser(form.name, form.email, form.password);
+        setSuccessMessage('¡Usuario creado correctamente! Ya puedes iniciar sesión.');
         switchMode('login');
       }
     } catch (error) {
@@ -64,6 +66,7 @@ export default function Login({ onLogin }) {
     setForm({ name: '', email: '', password: '' });
     setErrors({});
     setServerError('');
+    if (m !== 'login') setSuccessMessage('');
   }
 
   return (
@@ -163,6 +166,10 @@ export default function Login({ onLogin }) {
             />
             {errors.password && <span className="form-error">{errors.password}</span>}
           </div>
+
+          {successMessage && (
+            <p className="login-card__success">{successMessage}</p>
+          )}
 
           {serverError && (
             <p className="login-card__server-error">{serverError}</p>

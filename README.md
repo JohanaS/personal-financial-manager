@@ -1,5 +1,7 @@
 # 💰 Personal Financial Manager
 
+🔗 **[Ver aplicación en producción](https://personal-financial-manager-xi.vercel.app/)**
+
 Aplicación web full-stack para la gestión de finanzas personales. Permite a los usuarios registrar ingresos y gastos, visualizar su balance, aplicar la regla del presupuesto 50/30/20 y consultar reportes mensuales, todo con persistencia real en base de datos.
 
 ---

@@ -15,7 +15,7 @@ function formatCurrency(amount) {
   }).format(amount);
 }
 
-export default function Transactions({ transactions, onDelete, budgetRule }) {
+export default function Transactions({ transactions, onDelete, budgetRule, user, onLogout }) {
   const now = new Date();
   const [viewYear,  setViewYear]  = useState(now.getFullYear());
   const [viewMonth, setViewMonth] = useState(now.getMonth()); // 0-indexed
@@ -49,7 +49,7 @@ export default function Transactions({ transactions, onDelete, budgetRule }) {
 
   return (
     <>
-      <Header />
+      <Header user={user} onLogout={onLogout} />
       <main className="dashboard">
         {/* Encabezado de mes */}
         <div className="txpage__header">

@@ -9,18 +9,9 @@ import { ThemeProvider } from './context/ThemeContext';
 
 const DEFAULT_RULE = { indispensable: 50, ahorro: 30, extra: 20 };
 
-const INITIAL_TRANSACTIONS = [
-  { id: 1, amount: 3500.00, category: 'Salario',         type: 'income',  date: '2026-05-01', paymentMethod: 'efectivo', cardName: null,         budgetTag: null             },
-  { id: 2, amount:  120.50, category: 'Comida',           type: 'expense', date: '2026-05-02', paymentMethod: 'debito',   cardName: null,         budgetTag: 'indispensable'  },
-  { id: 3, amount:  450.00, category: 'Freelance',        type: 'income',  date: '2026-05-03', paymentMethod: 'efectivo', cardName: null,         budgetTag: null             },
-  { id: 4, amount:   85.00, category: 'Transporte',       type: 'expense', date: '2026-05-04', paymentMethod: 'debito',   cardName: null,         budgetTag: 'indispensable'  },
-  { id: 5, amount:  199.99, category: 'Compras',          type: 'expense', date: '2026-05-04', paymentMethod: 'credito',  cardName: 'Visa viajes',budgetTag: 'extra'          },
-  { id: 6, amount: 1200.00, category: 'Inversión',        type: 'income',  date: '2026-05-05', paymentMethod: 'efectivo', cardName: null,         budgetTag: 'ahorro'         },
-  { id: 7, amount:   65.00, category: 'Entretenimiento',  type: 'expense', date: '2026-05-06', paymentMethod: 'credito',  cardName: 'Oro personal',budgetTag: 'extra'         },
-  { id: 8, amount:   45.00, category: 'Servicios',        type: 'expense', date: '2026-05-06', paymentMethod: 'debito',   cardName: null,         budgetTag: 'indispensable'  },
-];
+const INITIAL_TRANSACTIONS = [];
 
-const INITIAL_CARDS = ['Visa viajes', 'Oro personal'];
+const INITIAL_CARDS = [];
 
 export default function App() {
   const [user, setUser]                 = useState(null); // { email, name }
@@ -77,8 +68,8 @@ export default function App() {
           ) : (
             <>
               <Route path="/" element={<Dashboard {...shared} />} />
-              <Route path="/transacciones" element={<Transactions transactions={transactions} onDelete={handleDeleteTransaction} budgetRule={budgetRule} />} />
-              <Route path="/reportes" element={<Reports transactions={transactions} />} />
+              <Route path="/transacciones" element={<Transactions transactions={transactions} onDelete={handleDeleteTransaction} budgetRule={budgetRule} user={user} onLogout={handleLogout} />} />
+              <Route path="/reportes" element={<Reports transactions={transactions} user={user} onLogout={handleLogout} />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </>
           )}

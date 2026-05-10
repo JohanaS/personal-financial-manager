@@ -6,12 +6,12 @@ const MONTHS = [
   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
 ];
 
-export default function Reports({ transactions }) {
+export default function Reports({ transactions, user, onLogout }) {
   const year = new Date().getFullYear();
 
   return (
     <>
-      <Header />
+      <Header user={user} onLogout={onLogout} />
       <main className="reports">
         <div className="reports__heading">
           <h2>Reportes {year}</h2>

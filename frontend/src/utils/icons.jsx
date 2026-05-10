@@ -3,7 +3,7 @@ import {
   UtensilsCrossed, Car, ShoppingBag, Film, Heart, Zap, Home,
   Wallet, ArrowUp, ArrowDown, CreditCard, Banknote,
   PiggyBank, Sparkles, Pencil, BarChart2, ClipboardList, Inbox,
-  Sun, Moon,
+  Sun, Moon, LogOut,
 } from 'lucide-react';
 
 // Default purple palette
@@ -47,6 +47,7 @@ const IC_MAP = {
   card:            CreditCard,
   sun:             Sun,
   moon:            Moon,
+  logout:          LogOut,
 };
 
 export function AppIcon({ name, size = 16, color = PURPLE, strokeWidth = 1.8, ...props }) {

@@ -19,9 +19,11 @@ function formatCurrency(amount) {
 }
 
 function formatDate(dateStr) {
-  const [year, month, day] = dateStr.split('-').map(Number);
-  return new Date(year, month - 1, day).toLocaleDateString('es-MX', {
+  const date = new Date(dateStr);
+  if (isNaN(date)) return '';
+  return date.toLocaleDateString('es-MX', {
     month: 'short', day: 'numeric', year: 'numeric',
+    timeZone: 'UTC',
   });
 }
 
@@ -106,7 +108,7 @@ function TxColumn({ col, txs, rule, onAskDelete }) {
         {txs.length === 0 ? (
           <div className="tx-col__empty">Sin transacciones</div>
         ) : (
-          txs.map(tx => <TxItem key={tx.id} tx={tx} onAskDelete={onAskDelete} />)
+          txs.map(tx => <TxItem key={tx._id ?? tx.id} tx={tx} onAskDelete={onAskDelete} />)
         )}
       </div>
     </div>
@@ -169,7 +171,7 @@ export default function TransactionList({ transactions, onDelete, rule }) {
               <div className="tx-col__body">
                 {income.length === 0
                   ? <div className="tx-col__empty">Sin ingresos este mes</div>
-                  : income.map(tx => <TxItem key={tx.id} tx={tx} onAskDelete={askDelete} />)
+                  : income.map(tx => <TxItem key={tx._id ?? tx.id} tx={tx} onAskDelete={askDelete} />)
                 }
               </div>
             </div>
@@ -195,7 +197,7 @@ export default function TransactionList({ transactions, onDelete, rule }) {
               </div>
               <div className="tx-list">
                 {untagged.map(tx => (
-                  <TxItem key={tx.id} tx={tx} onAskDelete={askDelete} />
+                  <TxItem key={tx._id ?? tx.id} tx={tx} onAskDelete={askDelete} />
                 ))}
               </div>
             </div>

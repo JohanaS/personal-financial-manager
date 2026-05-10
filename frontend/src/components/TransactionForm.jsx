@@ -2,6 +2,7 @@ import { useState } from 'react';
 import CustomSelect from './CustomSelect';
 import ConfirmDialog from './ConfirmDialog';
 import { AppIcon } from '../utils/icons';
+import { createTransaction } from '../utils/api';
 
 const CATEGORIES = {
   income: [
@@ -76,10 +77,13 @@ export default function TransactionForm({ onAdd, savedCards, onSaveCard, onDelet
     if (name === 'selectedCard') setShowNewCard(value === '__new__');
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     const amount = parseFloat(form.amount);
     if (!amount || amount <= 0 || !form.category || !form.date) return;
+
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+
     if (isCredit && !form.selectedCard) return;
     if (isCredit && form.selectedCard === '__new__' && !form.newCardName.trim()) return;
 
@@ -93,22 +97,28 @@ export default function TransactionForm({ onAdd, savedCards, onSaveCard, onDelet
       }
     }
 
-    onAdd({
-      id: Date.now(),
-      amount,
-      category: form.category,
-      type: form.type,
-      date: form.date,
-      paymentMethod: form.paymentMethod,
-      cardName,
-      budgetTag: (form.type === 'expense' || (form.type === 'income' && form.budgetTag === 'ahorro'))
-        ? form.budgetTag
-        : null,
-      note: form.note.trim() || null,
-    });
+    try{
+      const result = await createTransaction({
+        user: currentUser.id,
+        amount,
+        category: form.category,
+        type: form.type,
+        date: form.date,
+        paymentMethod: form.paymentMethod,
+        cardName,
+        budgetTag: (form.type === 'expense' || (form.type === 'income' && form.budgetTag === 'ahorro'))
+          ? form.budgetTag
+          : null,
+        note: form.note.trim() || null,
+      });
 
-    setForm(prev => ({ ...emptyForm, type: prev.type, paymentMethod: prev.paymentMethod }));
-    setShowNewCard(false);
+      if (onAdd) onAdd(result);
+      setForm(prev => ({ ...emptyForm, type: prev.type, paymentMethod: prev.paymentMethod }));
+      setShowNewCard(false);
+    } catch (error) {
+    console.error('Error creating transaction:', error);
+    alert('Hubo un error al guardar la transacción. Por favor, intenta de nuevo.');
+  }
   }
 
   return (

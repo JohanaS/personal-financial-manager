@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { AppIcon } from '../utils/icons';
+import { loginUser, registerUser } from '../utils/auth';
 
 export default function Login({ onLogin }) {
   const { dark, toggle } = useTheme();
   const [mode, setMode] = useState('login'); // 'login' | 'register'
 
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState('');
@@ -19,6 +20,9 @@ export default function Login({ onLogin }) {
 
   function validate() {
     const errs = {};
+    if (mode === 'register' && !form.name.trim()) {
+      errs.name = 'El nombre es obligatorio.';
+    }
     if (!form.email.trim()) {
       errs.email = 'El correo es obligatorio.';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
@@ -35,18 +39,21 @@ export default function Login({ onLogin }) {
   async function handleSubmit(e) {
     e.preventDefault();
     const errs = validate();
-    if (Object.keys(errs).length) { setErrors(errs); return; }
-
+    if (Object.keys(errs).length) { setErrors(errs); return;}
     setLoading(true);
     setServerError('');
 
     try {
-      // Simulación de auth — reemplaza con llamada real al backend
-      await new Promise(r => setTimeout(r, 700));
-      const username = form.email.split('@')[0];
-      onLogin({ email: form.email, name: username });
-    } catch {
-      setServerError('Ocurrió un error. Inténtalo de nuevo.');
+      if (mode === 'login') {
+        const user = await loginUser(form.email, form.password);
+        onLogin(user);
+      } else {
+        await registerUser(form.name, form.email, form.password);
+        switchMode('login');
+      }
+    } catch (error) {
+      setServerError(error.message || 'Ocurrió un error. Inténtalo de nuevo.');
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -54,7 +61,7 @@ export default function Login({ onLogin }) {
 
   function switchMode(m) {
     setMode(m);
-    setForm({ email: '', password: '' });
+    setForm({ name: '', email: '', password: '' });
     setErrors({});
     setServerError('');
   }
@@ -111,6 +118,22 @@ export default function Login({ onLogin }) {
 
         {/* Form */}
         <form className="login-card__form" onSubmit={handleSubmit} noValidate>
+          {mode === 'register' && (
+            <div className="form-group">
+              <label htmlFor="name" className="form-label">Nombre</label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                className={'form-input' + (errors.name ? ' form-input--error' : '')}
+                placeholder="Tu nombre completo"
+                value={form.name}
+                onChange={handleChange}
+                autoComplete="name"
+              />
+              {errors.name && <span className="form-error">{errors.name}</span>}
+            </div>
+          )}
           <div className="form-group">
             <label htmlFor="email" className="form-label">Correo electrónico</label>
             <input

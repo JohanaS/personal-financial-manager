@@ -1,9 +1,22 @@
+import { useState, useRef, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { AppIcon } from '../utils/icons';
 
 export default function Header({ user, onLogout }) {
   const { dark, toggle } = useTheme();
+  const [popupOpen, setPopupOpen] = useState(false);
+  const popupRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (popupRef.current && !popupRef.current.contains(e.target)) {
+        setPopupOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <header className="header">
@@ -54,19 +67,37 @@ export default function Header({ user, onLogout }) {
           >
             <AppIcon name={dark ? 'sun' : 'moon'} size={18} color="currentColor" />
           </button>
-          <div className="header__avatar" title={user?.name ?? 'Perfil de usuario'}>
-            {user?.name ? user.name.slice(0, 2).toUpperCase() : 'JA'}
-          </div>
-          {onLogout && (
+          <div className="header__avatar-wrap" ref={popupRef}>
             <button
               type="button"
-              className="header__logout"
-              onClick={onLogout}
-              title="Cerrar sesión"
+              className="header__avatar"
+              onClick={() => setPopupOpen(o => !o)}
+              title={user?.name ?? 'Perfil de usuario'}
+              aria-haspopup="true"
+              aria-expanded={popupOpen}
             >
-              Salir
+              {user?.name ? user.name.slice(0, 2).toUpperCase() : 'JA'}
             </button>
-          )}
+            {popupOpen && (
+              <div className="header__user-popup">
+                <div className="header__user-popup-info">
+                  <p className="header__user-popup-name">{user?.name}</p>
+                  <p className="header__user-popup-email">{user?.email}</p>
+                </div>
+                <div className="header__user-popup-divider" />
+                {onLogout && (
+                  <button
+                    type="button"
+                    className="header__user-popup-logout"
+                    onClick={() => { setPopupOpen(false); onLogout(); }}
+                  >
+                    <AppIcon name="logout" size={16} />
+                    Cerrar sesión
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </header>

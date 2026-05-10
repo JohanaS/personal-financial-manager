@@ -22,7 +22,25 @@ const transactionSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now
-  }
+  },
+  paymentMethod: {
+    type: String,
+    enum: ["efectivo", "debito", "credito"],
+    required: true
+  },
+  note: {
+    type: String,
+    default: "null"
+  },
+  cardName: {
+    type: String,
+    default: "null"
+  },
+  budgetTag: {
+    type: String,
+    default: "null"
+  },
+
 }, { timestamps: true });
 
 export default mongoose.model("Transaction", transactionSchema);

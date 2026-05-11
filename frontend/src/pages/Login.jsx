@@ -86,7 +86,7 @@ export default function Login({ onLogin }) {
         {/* Brand */}
         <div className="login-card__brand">
           <div className="login-card__brand-icon">$</div>
-          <span className="login-card__brand-name">Personal Financial</span>
+          <span className="login-card__brand-name">Pana financiero</span>
         </div>
 
         {/* Tab switcher */}

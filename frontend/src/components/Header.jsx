@@ -23,7 +23,7 @@ export default function Header({ user, onLogout }) {
       <div className="header__inner">
         <NavLink to="/" className="header__brand">
           <div className="header__brand-icon">$</div>
-          <span className="header__title">Personal Financial</span>
+          <span className="header__title">Pana financiero</span>
         </NavLink>
 
         <nav className="header__nav">

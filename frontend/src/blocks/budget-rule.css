@@ -256,3 +256,10 @@
   transition: background 0.15s;
 }
 .budget__edit-save-btn:hover { background: #4f46e5; }
+
+/* ── Responsive: móvil ───────────────────────────── */
+@media (max-width: 768px) {
+  .budget__body {
+    grid-template-columns: 1fr;
+  }
+}
